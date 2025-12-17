@@ -1,0 +1,36 @@
+-- create_tables.sql
+
+-- Kullanıcı Tablosu
+CREATE TABLE IF NOT EXISTS Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Cüzdan Tablosu (User ile Bire-Bir İlişki)
+CREATE TABLE IF NOT EXISTS Wallets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL UNIQUE,
+    PLN DECIMAL(10, 2) DEFAULT 1000.00,
+    USD DECIMAL(10, 2) DEFAULT 0.00,
+    EUR DECIMAL(10, 2) DEFAULT 0.00,
+    GBP DECIMAL(10, 2) DEFAULT 0.00,
+    FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+-- İşlem Tablosu (User ile Bire-Çok İlişki)
+CREATE TABLE IF NOT EXISTS Transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    type VARCHAR(50) DEFAULT 'EXCHANGE',
+    fromCurrency VARCHAR(10) NOT NULL,
+    toCurrency VARCHAR(10) NOT NULL,
+    fromAmount DECIMAL(10, 2) NOT NULL,
+    toAmount DECIMAL(10, 2) NOT NULL,
+    rate DECIMAL(10, 4) NOT NULL,
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'Completed',
+    FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
+);
